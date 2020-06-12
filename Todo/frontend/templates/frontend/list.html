@@ -42,7 +42,7 @@
         justify-content: space-around;
         align-items: flex-start;
       }
-      #form-wrapper{
+      #form-wrapper {
         position: -webkit-sticky;
         position: sticky;
         top: 0rem;
@@ -51,21 +51,21 @@
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
         padding: 40px;
       }
-      #submit{
+      #submit {
         background-color: #36d9b6;
         border-radius: 0;
         border: 0;
         color: #fff;
       }
-      .flex-wrapper{
+      .flex-wrapper {
         display: flex;
       }
-      .task-wrapper{
+      .task-wrapper {
         margin: 5px;
         padding: 5px;
         padding: 20px;
         cursor: pointer;
-        border-bottom:1px solid #e9e9e9 ;
+        border-bottom: 1px solid #e9e9e9;
         color: #686868;
       }
     </style>
@@ -94,5 +94,34 @@
         <div id="list-wrapper"></div>
       </div>
     </div>
+    <script type="text/javascript">
+      buildList();
+      function buildList() {
+        var wrapper = document.getElementById("list-wrapper");
+        var url = "http://127.0.0.1:8000/api/task-list/";
+        fetch(url)
+          .then((response) => response.json())
+          .then(function (data) {
+            console.log("Data:", data);
+
+            var list = data 
+            for(var i in list){
+              var item =`<div id="data-row-${i}" class="task-wrapper flex-wrapper">
+                <div style="flex:7">
+                  <span class="title">${list[i].title}</span>
+                </div>
+                <div style="flex:1">
+                  <button class="btn btn-sm btn-outline-info edit">Edit</button>
+                </div>
+                <div style="flex:1">
+                  <button class="btn btn-sm btn-outline-dark delete">-</button>
+
+                </div>
+              </div>`
+              wrapper.innerHTML+=item
+            }
+          });
+      }
+    </script>
   </body>
 </html>
