@@ -95,6 +95,7 @@
       </div>
     </div>
     <script type="text/javascript">
+      ////---------- Csrf Token--------////
       function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== "") {
@@ -113,6 +114,9 @@
         return cookieValue;
       }
       var csrftoken = getCookie("csrftoken");
+
+      ////---------- Building and Dispaying List--------////
+      var activeItem = null;
       buildList();
       function buildList() {
         var wrapper = document.getElementById("list-wrapper");
@@ -139,6 +143,17 @@
               </div>`;
               wrapper.innerHTML += item;
             }
+            for (var i in list) {
+              var editBtn = document.getElementsByClassName("edit")[i];
+              editBtn.addEventListener(
+                "click",
+                (function (item) {
+                  return function () {
+                    editItem(item);
+                  };
+                })(list[i])
+              );
+            }
           });
       }
 
@@ -147,6 +162,10 @@
         e.preventDefault();
         console.log("Form Submitted");
         var url = "http://127.0.0.1:8000/api/task-create/";
+        if (activeItem != null) {
+          var url = `http://127.0.0.1:8000/api/task-update/${activeItem.id}/`;
+          activeItem = null;
+        }
         var title = document.getElementById("title").value;
         fetch(url, {
           method: "POST",
@@ -157,9 +176,16 @@
           body: JSON.stringify({ title: title }),
         }).then(function (response) {
           buildList();
-          document.getElementById('form').reset()
+          document.getElementById("form").reset();
         });
       });
+
+      ////---------- Updating List--------////
+      function editItem(items) {
+        console.log("Item Clicked", items);
+        activeItem = items;
+        document.getElementById("title").value = activeItem.title;
+      }
     </script>
   </body>
 </html>
